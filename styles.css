@@ -1,0 +1,586 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: url('images/6.jpg') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.title, .carousel-container, .video-gallery, .content, .chat-interface, .social-media, .basic-info, .footer-content {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0);
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.title {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2.5em;
+    text-align: center;
+    color: #ff0000;
+    animation: fadeIn 2s;
+    margin-top: 20px;
+}
+
+.carousel-container {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    height: 300px;
+    position: relative;
+    justify-content: center;
+}
+
+.carousel-container img {
+    width: 100%;
+    transition: transform 1s ease-in-out;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.video-gallery {
+    padding: 20px;
+    text-align: center;
+}
+
+.video-gallery video {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    display: block;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.content {
+    padding: 20px;
+    text-align: center;
+}
+
+.cta-button {
+    background-color: #ff4500;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #ff6347;
+}
+
+.social-media {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    background-color: rgba(51, 51, 51, 0);
+}
+
+.social-icon {
+    color: #fff;
+    margin: 0 10px;
+    text-decoration: none;
+    transition: transform 0.3s;
+}
+
+.social-icon:hover {
+    transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.avatar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    position: relative;
+}
+
+.avatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    display: block;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 5px solid pink;
+    position: relative;
+    z-index: 1;
+}
+
+.red-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+    border: 5px solid red;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+.chat-interface {
+    padding: 20px;
+    text-align: center;
+}
+
+.chat-box {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 0 auto;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.user-message, .ai-message {
+    max-width: 70%;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    word-wrap: break-word;
+    color: #fff;
+}
+
+.user-message {
+    align-self: flex-end;
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.ai-message {
+    align-self: flex-start;
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+.chat-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    position: fixed;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+}
+
+#user-input {
+    flex: 1;
+    padding: 10px;
+    margin-right: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.fullscreen-button {
+    margin-left: 5px;
+    background-color: #28a745;
+}
+
+.fullscreen-button:hover {
+    background-color: #218838;
+}
+
+.basic-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 10px 0;
+    text-align: left;
+    gap: 5px;
+}
+
+.info-grid {
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.basic-info pre {
+    font-family: 'Courier New', Courier, monospace;
+    white-space: pre-wrap;
+    text-align: left;
+    tab-size: 4;
+}
+
+.basic-info .info-left, .basic-info .info-right {
+    width: 45%;
+}
+
+.basic-info p {
+    margin: 5px 0;
+}
+
+.basic-info table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    color: #fff;
+}
+
+.basic-info td {
+    padding: 10px;
+    border: 1px solid #fff;
+}
+
+.footer-content {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.footer-icons {
+    margin-bottom: 10px;
+}
+
+.footer-info p {
+    margin: 5px 0;
+}
+
+.social-icon {
+    color: #fff;
+    margin: 0 10px;
+    text-decoration: none;
+    transition: transform 0.3s;
+}
+
+.social-icon:hover {
+    transform: scale(1.1);
+}
+
+.video-title {
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.video-title .char1 {
+    color: #ff0000;
+}
+
+.video-title .char2 {
+    color: #00ff00;
+}
+
+.video-title .char3 {
+    color: #0000ff;
+}
+
+.video-title .char4 {
+    color: #ff69b4;
+}
+
+.photo-gallery {
+    padding: 20px;
+    text-align: center;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8em;
+    justify-items: center;
+    margin-bottom: 80px;
+}
+
+.photo-grid img {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s;
+}
+
+.photo-grid img:hover {
+    transform: scale(1.05);
+}
+
+.music-gallery {
+    padding: 20px;
+    text-align: center;
+}
+
+.music-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 70px; /* 每行间隔7行 */
+}
+
+.music-item {
+    width: 100%;
+    max-width: 600px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgba(249, 249, 249, 0.5); /* 透明背景 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.music-player {
+    width: 100%;
+    border: none; /* 移除边框 */
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.music-info {
+    text-align: center;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 10px; /* 确保信息在播放器上方 */
+}
+
+audio::-webkit-media-controls-panel {
+    background-color: rgba(249, 249, 249, 0.5);
+}
+
+audio::-webkit-media-controls-timeline-container {
+    background-color: #00ff00; /* 进度条背景为绿色 */
+}
+
+audio::-webkit-media-controls-timeline {
+    background-color: transparent; /* 透明以显示背景 */
+}
+
+audio::-webkit-media-controls-play-button,
+audio::-webkit-media-controls-mute-button,
+audio::-webkit-media-controls-volume-slider {
+    filter: invert(1);
+}
+
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+    color: #333;
+}
+
+audio::-webkit-media-controls-timeline::-webkit-progress-value {
+    background-color: #ff0000; /* 进度条为红色 */
+}
+
+.music-visualizer {
+    display: none;
+}
+
+.wordcloud-content {
+    padding: 20px;
+    text-align: center;
+    font-size: 1.2em;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 800px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.wordcloud {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.wordclouds {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: transparent;
+}
+
+.wordcloud-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px; /* 行间距 */
+}
+
+.wordcloud-row canvas {
+    margin: 0 10px; /* 每个词云图之间的间隔 */
+    border-radius: 10px;
+    box-shadow: none; /* 去除阴影 */
+    background-color: transparent;
+    width: 400px;
+    height: 200px;
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    margin-bottom: 5em; /* 在头像上方留出五行的间隔 */
+}
+
+.top-image {
+    width: 100%; /* 宽度自适应 */
+    height: auto; /* 保持图片比例 */
+    max-height: calc(5 * 1em); /* 高度占5行 */
+    opacity: 0.8; /* 设置透明度为80% */
+    display: block;
+    object-fit: cover; /* 确保图片按比例缩放 */
+}
+
+.new-ai-interface {
+    padding: 20px;
+    text-align: center;
+}
+
+#doubao-chat-box {
+    width: 80%;
+    max-width: 600px;
+    height: 150px;
+    border-radius: 10px;
+    overflow-y: auto;
+    margin: 0 auto 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+#doubao-user-input {
+    flex: 1;
+    padding: 10px;
+    margin-right: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* 默认样式，适用于桌面端和手机端 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.header, .footer-content {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-grid, .photo-grid, .music-list, .video-gallery {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    justify-items: center;
+}
+
+.chat-box {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    margin: 0 auto;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.chat-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.chat-input input, .chat-input button {
+    width: 90%;
+    margin-bottom: 10px;
+}
+
+@media (min-width: 768px) {
+    .basic-info {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .photo-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8em;
+    }
+}
+
+@media (max-width: 767px) {
+    .basic-info {
+        grid-template-columns: repeat(2, 1fr); /* 手机端两栏布局 */
+        justify-items: start; /* 左对齐 */
+        text-align: left; /* 文本左对齐 */
+    }
+
+    .photo-gallery {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .photo-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2em; /* 缩小间隔 */
+    }
+
+    .photo-grid img {
+        width: calc(33.33% - 1em); /* 每行三个图片 */
+        margin: 0.5em;
+    }
+
+    .chat-input {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        text-align: center; /* 文本居中 */
+    }
+
+    .music-list, .video-gallery, .footer-content {
+        text-align: center; /* 文本居中 */
+    }
+}
+</rewritten_file>
