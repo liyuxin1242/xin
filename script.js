@@ -238,7 +238,7 @@ document.getElementById('view-more').addEventListener('click', function(event) {
             iframe.src = qqLink;
             document.body.appendChild(iframe);
 
-            // 设置一个定时器，如果在一定时间内没有成功打开QQ，则跳安装页面
+            // 设置一个定时器，如果在一定时间内没有成功打开QQ，则跳��装页面
             setTimeout(() => {
                 document.body.removeChild(iframe);
                 window.location.href = qqInstallLink;
@@ -263,22 +263,29 @@ document.querySelectorAll('.video-layer').forEach(video => {
 
 document.querySelectorAll('.fullscreen-button').forEach((button, index) => {
     const video = document.querySelectorAll('.video-layer')[index];
-    button.addEventListener('click', () => {
-        if (video.requestFullscreen) {
-            video.requestFullscreen();
-        } else if (video.mozRequestFullScreen) { // Firefox
-            video.mozRequestFullScreen();
-        } else if (video.webkitRequestFullscreen) { // Chrome, Safari and Opera
-            video.webkitRequestFullscreen();
-        } else if (video.msRequestFullscreen) { // IE/Edge
-            video.msRequestFullscreen();
-        }
+    button.addEventListener('click', async () => {
+        try {
+            if (video.requestFullscreen) {
+                await video.requestFullscreen();
+            } else if (video.mozRequestFullScreen) { // Firefox
+                await video.mozRequestFullScreen();
+            } else if (video.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                await video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) { // IE/Edge
+                await video.msRequestFullscreen();
+            }
 
-        // 尝试在全屏时旋转设备
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(err => {
-                console.error('Orientation lock failed:', err);
-            });
+            // 只在支持屏幕方向锁定的设备上尝试锁定
+            if (screen.orientation && screen.orientation.lock && screen.orientation.type) {
+                try {
+                    await screen.orientation.lock('landscape');
+                } catch (orientationError) {
+                    // 静默处理方向锁定错误
+                    console.debug('Orientation lock not supported on this device');
+                }
+            }
+        } catch (error) {
+            console.debug('Fullscreen or orientation lock not supported');
         }
     });
 });
