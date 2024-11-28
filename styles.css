@@ -110,18 +110,28 @@ footer {
     justify-items: center;
     align-items: center;
     padding: 20px;
+    margin: 0 auto;
 }
 
 .video-layer {
     width: 100%;
+    max-width: 300px;
     height: auto;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s;
+    cursor: pointer;
 }
 
 .video-layer:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
+}
+
+.video-layer:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    transform: rotate(90deg);
 }
 
 .content {
@@ -438,6 +448,11 @@ button:hover {
 .music-player {
     text-align: center;
     margin: 10px;
+    transition: transform 0.3s;
+}
+
+.music-player:hover {
+    transform: scale(1.1);
 }
 
 .music-player audio {
@@ -494,7 +509,7 @@ button:hover {
 
 @media (max-width: 768px) {
     .carousel-container, .video-container {
-        grid-template-columns: repeat(2, 1fr); /* 在较小屏幕上调整为两列布局 */
+        grid-template-columns: repeat(2, 1fr); /* 在较小屏幕上调整为两布局 */
     }
 
     .music-players {
@@ -508,5 +523,26 @@ button:hover {
     .chat-box, #user-input {
         width: 90%; /* 在移动端增加宽度 */
     }
+}
+
+.video-wrapper {
+    position: relative;
+}
+
+.fullscreen-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.fullscreen-button:hover {
+    background-color: #0056b3;
 }
  

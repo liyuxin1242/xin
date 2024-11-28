@@ -238,12 +238,48 @@ document.getElementById('view-more').addEventListener('click', function(event) {
             iframe.src = qqLink;
             document.body.appendChild(iframe);
 
-            // 设置一个定时器，如果在一定时间内没有成功打开QQ，则跳转到安装页面
+            // 设置一个定时器，如果在一定时间内没有成功打开QQ，则跳安装页面
             setTimeout(() => {
                 document.body.removeChild(iframe);
                 window.location.href = qqInstallLink;
             }, 2000); // 2秒后跳转到安装页面
         }
     }
+});
+
+document.querySelectorAll('.video-layer').forEach(video => {
+    video.addEventListener('click', () => {
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.mozRequestFullScreen) { // Firefox
+            video.mozRequestFullScreen();
+        } else if (video.webkitRequestFullscreen) { // Chrome, Safari and Opera
+            video.webkitRequestFullscreen();
+        } else if (video.msRequestFullscreen) { // IE/Edge
+            video.msRequestFullscreen();
+        }
+    });
+});
+
+document.querySelectorAll('.fullscreen-button').forEach((button, index) => {
+    const video = document.querySelectorAll('.video-layer')[index];
+    button.addEventListener('click', () => {
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.mozRequestFullScreen) { // Firefox
+            video.mozRequestFullScreen();
+        } else if (video.webkitRequestFullscreen) { // Chrome, Safari and Opera
+            video.webkitRequestFullscreen();
+        } else if (video.msRequestFullscreen) { // IE/Edge
+            video.msRequestFullscreen();
+        }
+
+        // 尝试在全屏时旋转设备
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(err => {
+                console.error('Orientation lock failed:', err);
+            });
+        }
+    });
 });
   
