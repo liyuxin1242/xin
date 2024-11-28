@@ -218,7 +218,7 @@ document.querySelectorAll('audio').forEach((audio, index) => {
 document.getElementById('view-more').addEventListener('click', function(event) {
     event.preventDefault();
 
-    const qqLink = 'mqqwpa://im/chat?chat_type=wpa&uin=977223039&version=1&src_type=web'; // 使用正确的QQ协议链接
+    const qqLink = 'mqqapi://card/show_pslcard?src_type=internal&version=1&uin=977223039'; // 使用正确的QQ协议链接
     const qqInstallLink = 'https://im.qq.com/index/';
 
     // 提示用户是否打开QQ
