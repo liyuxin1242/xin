@@ -65,6 +65,8 @@ footer {
     border: 1px solid #ccc;
     transition: transform 0.3s, border-color 0.3s;
     border-radius: 5px;
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 .carousel-container img:hover {
@@ -121,6 +123,10 @@ footer {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: transform 0.2s;
+    object-fit: cover;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .video-layer:hover {

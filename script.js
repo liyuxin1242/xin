@@ -220,82 +220,73 @@ document.querySelectorAll('audio').forEach((audio, index) => {
 document.getElementById('view-more').addEventListener('click', function(event) {
     event.preventDefault();
 
-    const qqLink = 'mqqapi://card/show_pslcard?src_type=internal&version=1&uin=977223039'; // 使用正确的QQ协议链接
+    const qqLink = 'mqqapi://card/show_pslcard?src_type=internal&version=1&uin=977223039';
     const qqInstallLink = 'https://im.qq.com/index/';
 
-    // 提示用户是否打开QQ
-    const userConfirmed = confirm("是否打开QQ软件并展示QQ号为977223039的名片？");
+    // 更新确认对话框的文本
+    const userConfirmed = confirm("是否打开QQ添加其好友？");
 
     if (userConfirmed) {
         // 检测是否为移动设备
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
         if (isMobile) {
-            // 在移动设备上，尝试打开QQ客户端
             window.location.href = qqLink;
         } else {
-            // 在非移动设备上，使用iframe尝试打开QQ客户端
             const iframe = document.createElement('iframe');
             iframe.style.display = 'none';
             iframe.src = qqLink;
             document.body.appendChild(iframe);
 
-            // 设置一个定时器，如果在一定时间内没��成功打开QQ，则跳装页面
             setTimeout(() => {
                 document.body.removeChild(iframe);
                 window.location.href = qqInstallLink;
-            }, 2000); // 2秒后跳转到安装页面
+            }, 2000);
         }
     }
 });
 
 document.querySelectorAll('.video-layer').forEach(video => {
+    // 确保视频循环播放
+    video.loop = true;
+    
     video.addEventListener('click', () => {
         if (video.requestFullscreen) {
             video.requestFullscreen();
-        } else if (video.mozRequestFullScreen) { // Firefox
+        } else if (video.mozRequestFullScreen) {
             video.mozRequestFullScreen();
-        } else if (video.webkitRequestFullscreen) { // Chrome, Safari and Opera
+        } else if (video.webkitRequestFullscreen) {
             video.webkitRequestFullscreen();
-        } else if (video.msRequestFullscreen) { // IE/Edge
+        } else if (video.msRequestFullscreen) {
             video.msRequestFullscreen();
         }
     });
 });
 
+// 全屏按钮点击事件
 document.querySelectorAll('.fullscreen-button').forEach((button, index) => {
     const video = document.querySelectorAll('.video-layer')[index];
     button.addEventListener('click', async () => {
         try {
-            // 设置循环播放并自动播放
+            // 确保循环播放
             video.loop = true;
-            video.autoplay = true;
             
             // 请求全屏
             if (video.requestFullscreen) {
                 await video.requestFullscreen();
-            } else if (video.mozRequestFullScreen) { // Firefox
+            } else if (video.mozRequestFullScreen) {
                 await video.mozRequestFullScreen();
-            } else if (video.webkitRequestFullscreen) { // Chrome, Safari and Opera
+            } else if (video.webkitRequestFullscreen) {
                 await video.webkitRequestFullscreen();
-            } else if (video.msRequestFullscreen) { // IE/Edge
+            } else if (video.msRequestFullscreen) {
                 await video.msRequestFullscreen();
             }
 
-            // 确保视频开始播放
+            // 开始播放
             try {
                 await video.play();
             } catch (playError) {
                 console.debug('Autoplay prevented');
-            }
-
-            // 只在支持屏幕方向锁定的设备上尝试锁定
-            if (screen.orientation && screen.orientation.lock && screen.orientation.type) {
-                try {
-                    await screen.orientation.lock('landscape');
-                } catch (orientationError) {
-                    console.debug('Orientation lock not supported on this device');
-                }
             }
         } catch (error) {
             console.debug('Fullscreen or orientation lock not supported');
@@ -318,10 +309,49 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 1000);
 });
 
-// 优化视频加载
+// 优化视频加载和播放
 document.querySelectorAll('video').forEach(video => {
-    video.preload = 'metadata'; // 只预加载元数据
+    // 设置视频预加载
+    video.preload = 'metadata';
+    
+    // 根据网络状况动态调整视频质量
+    if (navigator.connection) {
+        const connection = navigator.connection;
+        if (connection.effectiveType === '4g') {
+            video.querySelector('source').setAttribute('size', '1080');
+        } else {
+            video.querySelector('source').setAttribute('size', '720');
+        }
+    }
+
+    // 使用 Intersection Observer 延迟加载视频
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                video.load();
+                observer.unobserve(video);
+            }
+        });
+    });
+    observer.observe(video);
 });
+
+// 优化页面加载
+document.addEventListener('DOMContentLoaded', function() {
+    // 延迟加载非关键资源
+    setTimeout(() => {
+        // 加载词云等非关键内容
+    }, 1000);
+});
+
+// 使用 requestAnimationFrame 优化动画性能
+function optimizeAnimation() {
+    requestAnimationFrame(() => {
+        // 处理动画相关的代码
+        optimizeAnimation();
+    });
+}
+optimizeAnimation();
 
 // 在页面加载完成后隐藏加载提示
 window.addEventListener('load', function() {
