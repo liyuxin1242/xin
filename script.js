@@ -179,18 +179,18 @@ document.querySelectorAll('audio').forEach((audio, index) => {
         const progressPercent = (audio.currentTime / audio.duration) * 100;
         progress.style.width = `${progressPercent}%`;
 
-        // 更新当前时间
+
         const currentMinutes = Math.floor(audio.currentTime / 60);
         const currentSeconds = Math.floor(audio.currentTime % 60);
         currentTime.textContent = `${currentMinutes}:${currentSeconds < 10 ? '0' : ''}${currentSeconds}`;
 
-        // 更新总时间
+
         const totalMinutes = Math.floor(audio.duration / 60);
         const totalSeconds = Math.floor(audio.duration % 60);
         totalTime.textContent = `${totalMinutes}:${totalSeconds < 10 ? '0' : ''}${totalSeconds}`;
     });
 
-    // 添加播放和暂停功能
+
     audio.addEventListener('play', () => {
         document.querySelectorAll('audio').forEach((otherAudio) => {
             if (otherAudio !== audio) {
@@ -199,7 +199,7 @@ document.querySelectorAll('audio').forEach((audio, index) => {
         });
     });
 
-    // 允许进度条滑动
+
     progressBar.addEventListener('click', (e) => {
         const rect = progressBar.getBoundingClientRect();
         const offsetX = e.clientX - rect.left;
@@ -207,7 +207,7 @@ document.querySelectorAll('audio').forEach((audio, index) => {
         audio.currentTime = newTime;
     });
 
-    // 初始化总时间
+
     audio.addEventListener('loadedmetadata', () => {
         const totalMinutes = Math.floor(audio.duration / 60);
         const totalSeconds = Math.floor(audio.duration % 60);
@@ -216,22 +216,29 @@ document.querySelectorAll('audio').forEach((audio, index) => {
 });
 
 document.getElementById('view-more').addEventListener('click', function(event) {
-    event.preventDefault(); // 阻止默认链接行为
+    event.preventDefault();
 
-    // 尝试打开QQ客户端
-    const qqLink = 'tencent://AddContact/?from=1&uin=977223039&site=qq&menu=yes';
+    const qqLink = 'mqqwpa://im/chat?chat_type=wpa&uin=997223039&version=1&src_type=web'; // 使用正确的QQ协议链接
     const qqInstallLink = 'https://im.qq.com/index/';
 
-    // 创建一个临时的iframe来尝试打开QQ
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = qqLink;
-    document.body.appendChild(iframe);
+    // 检测是否为移动设备
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    // 设置一个定时器，如果在一定时间内没有成功打开QQ，则跳转到安装页面
-    setTimeout(() => {
-        document.body.removeChild(iframe);
-        window.location.href = qqInstallLink;
-    }, 2000); // 2秒后跳转到安装页面
+    if (isMobile) {
+        // 在移动设备上，尝试打开QQ客户端
+        window.location.href = qqLink;
+    } else {
+        // 在非移动设备上，使用iframe尝试打开QQ客户端
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = qqLink;
+        document.body.appendChild(iframe);
+
+        // 设置一个定时器，如果在一定时间内没有成功打开QQ，则跳转到安装页面
+        setTimeout(() => {
+            document.body.removeChild(iframe);
+            window.location.href = qqInstallLink;
+        }, 2000); // 2秒后跳转到安装页面
+    }
 });
   
