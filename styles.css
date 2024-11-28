@@ -365,8 +365,8 @@ body {
 
 @media (max-width: 768px) {
     body {
-        background: url('images/1.png') no-repeat center center fixed;
-        background-size: cover; /* 确保背景图自适应屏幕 */
+        background: url('img/1.png') no-repeat center center fixed;
+        background-size: 100% 100%; /* 确保背景图宽高自适应屏幕 */
     }
 }
 
