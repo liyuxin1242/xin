@@ -119,19 +119,20 @@ footer {
     height: auto;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s;
     cursor: pointer;
+    transition: transform 0.2s;
 }
 
 .video-layer:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .video-layer:fullscreen {
     width: 100vw;
     height: 100vh;
-    object-fit: cover;
-    transform: rotate(90deg);
+    object-fit: contain;
+    background: black;
+    max-width: none;
 }
 
 .content {
@@ -546,5 +547,23 @@ button:hover {
 
 .fullscreen-button:hover {
     background-color: rgba(0, 0, 0, 0.7);
+}
+
+.video-layer::-webkit-media-controls-start-playback-button {
+    display: none !important;
+}
+
+.video-layer::-webkit-media-controls-play-button {
+    display: none !important;
+}
+
+/* 对于Firefox */
+.video-layer::-moz-media-controls-start-playback-button {
+    display: none !important;
+}
+
+/* 对于其他浏览器 */
+.video-layer::-ms-media-controls-start-playback-button {
+    display: none !important;
 }
  

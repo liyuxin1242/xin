@@ -10,6 +10,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.23/jsrsasign-all-min.js"></script>
 </head>
 <body>
+    <div id="loading-indicator" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.9); display: flex; justify-content: center; align-items: center; z-index: 9999;">
+        <div>加载中...</div>
+    </div>
     <header>
         <div class="artistic-text">welcome to ！</div>
         <img src="images/avatar.jpg" alt="个人头像" class="avatar">
@@ -33,7 +36,7 @@
         <section class="music-players">
             <div class="music-player">
                 <p class="song-title">红昭愿-音阙诗听</p>
-                <audio id="audio1" controls>
+                <audio id="audio1" controls loop>
                     <source src="music/1 (1).mp3" type="audio/mpeg">
                     您的浏览器不支持音频播放。
                 </audio>
@@ -46,7 +49,7 @@
             </div>
             <div class="music-player">
                 <p class="song-title">飘-沐可儿</p>
-                <audio id="audio2" controls>
+                <audio id="audio2" controls loop>
                     <source src="music/1 (2).mp3" type="audio/mpeg">
                     您的浏览器不支持音频播放。
                 </audio>
@@ -59,7 +62,7 @@
             </div>
             <div class="music-player">
                 <p class="song-title">老街-李荣浩</p>
-                <audio id="audio3" controls>
+                <audio id="audio3" controls loop>
                     <source src="music/1 (3).mp3" type="audio/mpeg">
                     您的浏览器不支持音频播放。
                 </audio>
@@ -72,7 +75,7 @@
             </div>
             <div class="music-player">
                 <p class="song-title">摩羯座·操控者-沐可儿</p>
-                <audio id="audio4" controls>
+                <audio id="audio4" controls loop>
                     <source src="music/1 (4).mp3" type="audio/mpeg">
                     您的浏览器不支持音频播放。
                 </audio>
@@ -85,7 +88,7 @@
             </div>
             <div class="music-player">
                 <p class="song-title">星落凝成糖-萨顶顶</p>
-                <audio id="audio5" controls>
+                <audio id="audio5" controls loop>
                     <source src="music/1 (5).mp3" type="audio/mpeg">
                     您的浏览器不支持音频播放。
                 </audio>
@@ -98,7 +101,7 @@
             </div>
             <div class="music-player">
                 <p class="song-title">木偶戏-玥夏</p>
-                <audio id="audio6" controls>
+                <audio id="audio6" controls loop>
                     <source src="music/1 (6).mp3" type="audio/mpeg">
                     您的浏览器不支持音频播放。
                 </audio>
@@ -121,7 +124,7 @@
         <section class="carousel">
             <div class="carousel-container">
                 <div>
-                    <img src="images/1 (1).jpg" alt="照片1">
+                    <img src="images/1 (1).jpg" alt="照片1" loading="lazy">
                 </div>
                 <div>
                     <img src="images/1 (2).jpg" alt="照片2">
@@ -170,28 +173,30 @@
         <section class="video-gallery">
             <div class="video-container">
                 <div class="video-wrapper">
-                    <video class="video-layer" controls>
-                        <source src="videos/1.mp4" type="video/mp4">
+                    <video class="video-layer" controls loop playsinline>
+                        <source src="videos/1.mp4" type="video/mp4" />
+                        <!-- 如果有更高分辨率的视频源，可以添加多个source -->
+                        <!-- <source src="videos/1-hd.mp4" type="video/mp4" /> -->
                         您的浏览器不支持HTML5视频。
                     </video>
                     <button class="fullscreen-button">全屏</button>
                 </div>
                 <div class="video-wrapper">
-                    <video class="video-layer" controls>
+                    <video class="video-layer" controls loop>
                         <source src="videos/2.mp4" type="video/mp4">
-                        您的浏览器不支持HTML5视频。
+                        您的浏览器不支持HTML5��频。
                     </video>
                     <button class="fullscreen-button">全屏</button>
                 </div>
                 <div class="video-wrapper">
-                    <video class="video-layer" controls>
+                    <video class="video-layer" controls loop>
                         <source src="videos/3.mp4" type="video/mp4">
                         您的浏览器不支持HTML5视频。
                     </video>
                     <button class="fullscreen-button">全屏</button>
                 </div>
                 <div class="video-wrapper">
-                    <video class="video-layer" controls>
+                    <video class="video-layer" controls loop>
                         <source src="videos/4.mp4" type="video/mp4">
                         您的浏览器不支持HTML5视频。
                     </video>

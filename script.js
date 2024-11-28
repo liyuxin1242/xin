@@ -213,6 +213,8 @@ document.querySelectorAll('audio').forEach((audio, index) => {
         const totalSeconds = Math.floor(audio.duration % 60);
         totalTime.textContent = `${totalMinutes}:${totalSeconds < 10 ? '0' : ''}${totalSeconds}`;
     });
+
+    audio.loop = true;
 });
 
 document.getElementById('view-more').addEventListener('click', function(event) {
@@ -238,7 +240,7 @@ document.getElementById('view-more').addEventListener('click', function(event) {
             iframe.src = qqLink;
             document.body.appendChild(iframe);
 
-            // 设置一个定时器，如果在一定时间内没有成功打开QQ，则跳��装页面
+            // 设置一个定时器，如果在一定时间内没��成功打开QQ，则跳装页面
             setTimeout(() => {
                 document.body.removeChild(iframe);
                 window.location.href = qqInstallLink;
@@ -265,6 +267,11 @@ document.querySelectorAll('.fullscreen-button').forEach((button, index) => {
     const video = document.querySelectorAll('.video-layer')[index];
     button.addEventListener('click', async () => {
         try {
+            // 设置循环播放并自动播放
+            video.loop = true;
+            video.autoplay = true;
+            
+            // 请求全屏
             if (video.requestFullscreen) {
                 await video.requestFullscreen();
             } else if (video.mozRequestFullScreen) { // Firefox
@@ -275,12 +282,18 @@ document.querySelectorAll('.fullscreen-button').forEach((button, index) => {
                 await video.msRequestFullscreen();
             }
 
+            // 确保视频开始播放
+            try {
+                await video.play();
+            } catch (playError) {
+                console.debug('Autoplay prevented');
+            }
+
             // 只在支持屏幕方向锁定的设备上尝试锁定
             if (screen.orientation && screen.orientation.lock && screen.orientation.type) {
                 try {
                     await screen.orientation.lock('landscape');
                 } catch (orientationError) {
-                    // 静默处理方向锁定错误
                     console.debug('Orientation lock not supported on this device');
                 }
             }
@@ -288,5 +301,30 @@ document.querySelectorAll('.fullscreen-button').forEach((button, index) => {
             console.debug('Fullscreen or orientation lock not supported');
         }
     });
+
+    // 监听退出全屏事件
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+            video.loop = true; // 保持循环状态
+        }
+    });
+});
+
+// 延迟加载非关键功能
+document.addEventListener('DOMContentLoaded', function() {
+    // 延迟加载词云
+    setTimeout(() => {
+        // 词云初始化代码
+    }, 1000);
+});
+
+// 优化视频加载
+document.querySelectorAll('video').forEach(video => {
+    video.preload = 'metadata'; // 只预加载元数据
+});
+
+// 在页面加载完成后隐藏加载提示
+window.addEventListener('load', function() {
+    document.getElementById('loading-indicator').style.display = 'none';
 });
   
