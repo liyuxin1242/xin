@@ -363,6 +363,13 @@ body {
     overflow-x: hidden;
 }
 
+@media (max-width: 768px) {
+    body {
+        background: url('images/1.png') no-repeat center center fixed;
+        background-size: cover; /* 确保背景图自适应屏幕 */
+    }
+}
+
 .ai-assistant {
     padding: 20px;
     background-color: rgba(255, 255, 255, 0.8);
