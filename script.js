@@ -218,27 +218,32 @@ document.querySelectorAll('audio').forEach((audio, index) => {
 document.getElementById('view-more').addEventListener('click', function(event) {
     event.preventDefault();
 
-    const qqLink = 'mqqwpa://im/chat?chat_type=wpa&uin=997223039&version=1&src_type=web'; // 使用正确的QQ协议链接
+    const qqLink = 'mqqwpa://im/chat?chat_type=wpa&uin=977223039&version=1&src_type=web'; // 使用正确的QQ协议链接
     const qqInstallLink = 'https://im.qq.com/index/';
 
-    // 检测是否为移动设备
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    // 提示用户是否打开QQ
+    const userConfirmed = confirm("是否打开QQ软件并展示QQ号为977223039的名片？");
 
-    if (isMobile) {
-        // 在移动设备上，尝试打开QQ客户端
-        window.location.href = qqLink;
-    } else {
-        // 在非移动设备上，使用iframe尝试打开QQ客户端
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = qqLink;
-        document.body.appendChild(iframe);
+    if (userConfirmed) {
+        // 检测是否为移动设备
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-        // 设置一个定时器，如果在一定时间内没有成功打开QQ，则跳转到安装页面
-        setTimeout(() => {
-            document.body.removeChild(iframe);
-            window.location.href = qqInstallLink;
-        }, 2000); // 2秒后跳转到安装页面
+        if (isMobile) {
+            // 在移动设备上，尝试打开QQ客户端
+            window.location.href = qqLink;
+        } else {
+            // 在非移动设备上，使用iframe尝试打开QQ客户端
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = qqLink;
+            document.body.appendChild(iframe);
+
+            // 设置一个定时器，如果在一定时间内没有成功打开QQ，则跳转到安装页面
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+                window.location.href = qqInstallLink;
+            }, 2000); // 2秒后跳转到安装页面
+        }
     }
 });
   
