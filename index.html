@@ -6,8 +6,8 @@
     <title>昕的CARD</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="images/10.jpg" type="image/jpeg">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.0.6/wordcloud2.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.23/jsrsasign-all-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.0.6/wordcloud2.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/10.5.23/jsrsasign-all-min.js" defer></script>
 </head>
 <body>
     <div id="loading-indicator" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.9); display: flex; justify-content: center; align-items: center; z-index: 9999;">
@@ -48,7 +48,7 @@
         <section class="music-players">
             <div class="music-player">
                 <p class="song-title">红昭愿-音阙诗听</p>
-                <audio id="audio1" controls loop>
+                <audio id="audio1" controls preload="none">
                     <source src="music/1 (1).mp3" type="audio/mpeg">
                     您的浏览器不支持音频播放。
                 </audio>
@@ -136,7 +136,7 @@
         <section class="carousel">
             <div class="carousel-container">
                 <div>
-                    <img src="images/1 (1).jpg" alt="照片1" loading="lazy">
+                    <img src="images/1 (1).jpg" alt="照片1" loading="lazy" decoding="async">
                 </div>
                 <div>
                     <img src="images/1 (2).jpg" alt="照片2">
@@ -185,8 +185,8 @@
         <section class="video-gallery">
             <div class="video-container">
                 <div class="video-wrapper">
-                    <video class="video-layer" controls loop playsinline preload="metadata">
-                        <source src="videos/1.mp4" type="video/mp4" size="1080">
+                    <video class="video-layer" controls preload="none">
+                        <source src="videos/1.mp4" type="video/mp4">
                         <source src="videos/1-720p.mp4" type="video/mp4" size="720">
                         您的浏览器不支持HTML5视频。
                     </video>
@@ -264,7 +264,7 @@
             </div>
         </div>
     </footer>
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
     <!-- 在body中添加对话框 -->
     <div id="blessing-dialog" class="dialog" style="display: none;">
         <div class="dialog-content">

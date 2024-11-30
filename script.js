@@ -325,47 +325,42 @@ document.querySelectorAll('.fullscreen-button').forEach((button, index) => {
     });
 });
 
-// 延迟加载非关键功能
+// 使用 Intersection Observer 延迟加载资源
 document.addEventListener('DOMContentLoaded', function() {
-    // 延迟加载词云
+    // 延迟加载图片
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                observer.unobserve(img);
+            }
+        });
+    });
+
+    // 延迟加载视频
+    const videoObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const video = entry.target;
+                video.src = video.dataset.src;
+                observer.unobserve(video);
+            }
+        });
+    });
+
+    // 优化词云加载
     setTimeout(() => {
         // 词云初始化代码
     }, 1000);
 });
 
-// 优化视频加载和放
-document.querySelectorAll('video').forEach(video => {
-    // 设置视频预加载
-    video.preload = 'metadata';
-    
-    // 根据网络状况动态调整视频质量
-    if (navigator.connection) {
-        const connection = navigator.connection;
-        if (connection.effectiveType === '4g') {
-            video.querySelector('source').setAttribute('size', '1080');
-        } else {
-            video.querySelector('source').setAttribute('size', '720');
-        }
-    }
-
-    // 使用 Intersection Observer 延迟加载视频
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                video.load();
-                observer.unobserve(video);
-            }
-        });
+// 优化媒体播放
+document.querySelectorAll('audio, video').forEach(media => {
+    media.preload = 'none';
+    media.addEventListener('loadstart', () => {
+        media.volume = 1.0;
     });
-    observer.observe(video);
-});
-
-// 优化页面加载
-document.addEventListener('DOMContentLoaded', function() {
-    // 延迟加载非关键资源
-    setTimeout(() => {
-        // 加载词云等非关键内容
-    }, 1000);
 });
 
 // 使用 requestAnimationFrame 优化动画性能
@@ -394,6 +389,10 @@ function initializeStats() {
         // 增加访问次数
         visitCount += 1;
         localStorage.setItem('visitCount', visitCount);
+        
+        // 每天第一次访问时增加点赞次数
+        likeCount += 1;
+        localStorage.setItem('likeCount', likeCount);
         
         // 重置点赞状态，允许今天点赞
         localStorage.removeItem('hasLiked');
@@ -583,5 +582,38 @@ document.querySelectorAll('video').forEach(video => {
     video.addEventListener('play', () => {
         stopAllMedia(video); // 停止其他媒体播放
     });
+});
+
+// 禁止右键菜单
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
+// 禁止键盘快捷键
+document.addEventListener('keydown', function(e) {
+    // 禁止 Ctrl + S
+    if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+    }
+    // 禁止 Ctrl + U (查看源代码)
+    if (e.ctrlKey && e.key === 'u') {
+        e.preventDefault();
+    }
+    // 禁止 F12
+    if (e.key === 'F12') {
+        e.preventDefault();
+    }
+});
+
+// 禁止拖拽图片
+document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('dragstart', function(e) {
+        e.preventDefault();
+    });
+});
+
+// 禁止选择文本
+document.addEventListener('selectstart', function(e) {
+    e.preventDefault();
 });
   

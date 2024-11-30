@@ -819,4 +819,33 @@ button:hover {
     font-weight: bold;
     transition: color 0.3s;
 }
+
+/* 禁止选择文本 */
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* 禁止拖拽图片 */
+img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+}
+
+/* 优化动画性能 */
+.video-layer, .music-player, img {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+/* 减少重绘和重排 */
+.carousel-container, .video-container, .music-players {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
  
