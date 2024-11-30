@@ -44,7 +44,23 @@ window.onload = function() {
         weightFactor: 15,
         fontFamily: 'Comic Sans MS, cursive, sans-serif',
         color: function(word, weight) {
-            const colors = ['#ff69b4', '#ff4500', '#ffd700', '#ff6347', '#ffa07a'];
+            const colors = [
+                '#FF1493', // 深粉色
+                '#FF4500', // 橙红色
+                '#FFD700', // 金色
+                '#FF69B4', // 粉红色
+                '#00FF00', // 亮绿色
+                '#1E90FF', // 道奇蓝
+                '#FF00FF', // 洋红色
+                '#00FFFF', // 青色
+                '#FFA500', // 橙色
+                '#9400D3', // 深紫色
+                '#32CD32', // 酸橙绿
+                '#FF6347', // 番茄色
+                '#4169E1', // 皇家蓝
+                '#8A2BE2', // 紫罗兰色
+                '#FF8C00'  // 深橙色
+            ];
             return colors[Math.floor(Math.random() * colors.length)];
         },
         backgroundColor: 'rgba(255, 255, 255, 0)',
@@ -53,7 +69,15 @@ window.onload = function() {
         shape: 'circle',
         drawOutOfBound: false,
         click: function(item) {
-            alert(item[0] + ': ' + item[1]);
+            // 显示对话框并设置内容
+            const dialog = document.getElementById('blessing-dialog');
+            const blessingText = document.getElementById('blessing-text');
+            blessingText.textContent = item[0];
+            blessingText.style.color = this.color(item[0], item[1]);
+            dialog.style.display = 'flex';
+
+            // 阻止事件冒泡
+            event.stopPropagation();
         }
     };
 
@@ -247,7 +271,7 @@ document.getElementById('view-more').addEventListener('click', function(event) {
 });
 
 document.querySelectorAll('.video-layer').forEach(video => {
-    // 确保视频循环播放
+    // 确保循环播放
     video.loop = true;
     
     video.addEventListener('click', () => {
@@ -309,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 1000);
 });
 
-// 优化视频加载和播放
+// 优化视频加载和放
 document.querySelectorAll('video').forEach(video => {
     // 设置视频预加载
     video.preload = 'metadata';
@@ -353,8 +377,211 @@ function optimizeAnimation() {
 }
 optimizeAnimation();
 
-// 在页面加载完成后隐藏加载提示
+// 访问统计和点赞功能
+function initializeStats() {
+    // 获取当前日期
+    const today = new Date().toLocaleDateString();
+    const lastVisitDate = localStorage.getItem('lastVisitDate');
+    
+    // 获取存储的访问次数，初始值设为20
+    let visitCount = parseInt(localStorage.getItem('visitCount')) || 20;
+    
+    // 获取存储的点赞数，初始值设为10
+    let likeCount = parseInt(localStorage.getItem('likeCount')) || 10;
+    
+    // 检查是否是今天第一次访问
+    if (lastVisitDate !== today) {
+        // 增加访问次数
+        visitCount += 1;
+        localStorage.setItem('visitCount', visitCount);
+        
+        // 重置点赞状态，允许今天点赞
+        localStorage.removeItem('hasLiked');
+        localStorage.removeItem('lastLikeDate');
+        
+        // 更新最后访问日期
+        localStorage.setItem('lastVisitDate', today);
+    }
+    
+    // 更新显示
+    document.getElementById('visit-number').textContent = visitCount;
+    document.getElementById('like-number').textContent = likeCount;
+    
+    // 检查是否已经点赞
+    const lastLikeDate = localStorage.getItem('lastLikeDate');
+    const hasLiked = lastLikeDate === today;
+    const likeButton = document.getElementById('like-button');
+    
+    if (hasLiked) {
+        likeButton.classList.add('liked');
+    }
+    
+    // 点赞按钮事件
+    likeButton.addEventListener('click', function() {
+        const currentDate = new Date().toLocaleDateString();
+        if (!hasLiked && lastLikeDate !== currentDate) {
+            // 点赞动画效果
+            this.classList.add('liking');
+            
+            // 更新点赞数
+            likeCount += 1;
+            localStorage.setItem('likeCount', likeCount);
+            document.getElementById('like-number').textContent = likeCount;
+            
+            // 记录点赞日期
+            localStorage.setItem('lastLikeDate', currentDate);
+            
+            // 添加点赞后的样式
+            setTimeout(() => {
+                this.classList.remove('liking');
+                this.classList.add('liked');
+            }, 500);
+            
+            // 显示点赞成功提示
+            const heart = document.createElement('div');
+            heart.className = 'heart-animation';
+            heart.innerHTML = '❤️';
+            this.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 1000);
+        } else {
+            // 提示已经点赞
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = '您今天已经点赞过啦~';
+            this.appendChild(tooltip);
+            
+            setTimeout(() => {
+                tooltip.remove();
+            }, 2000);
+        }
+    });
+}
+
+// 在页面加载完成后初始化统计功能
 window.addEventListener('load', function() {
     document.getElementById('loading-indicator').style.display = 'none';
+    initializeStats();
+});
+
+// 更新点击任意处关闭对话框的代码
+document.addEventListener('click', function(event) {
+    const dialog = document.getElementById('blessing-dialog');
+    const dialogContent = document.querySelector('.dialog-content');
+    
+    // 如果点击的是对话框背景（不是对话框内容）
+    if (event.target === dialog) {
+        dialog.style.display = 'none';
+    }
+});
+
+// 词云图点击事件
+const wordCloudElements = document.querySelectorAll('.wordcloud canvas');
+
+wordCloudElements.forEach((canvas, index) => {
+    canvas.addEventListener('click', function() {
+        const words = [
+            ['我亦神明', 12],
+            ['来人间一次', 10],
+            ['美丽大方', 8],
+            ['快乐无忧', 6],
+            ['梦想起航', 5],
+            ['青春飞扬', 4],
+            ['心怀暖阳', 3],
+            ['笑容灿烂', 2],
+            ['活力无限', 1],
+            ['乐观前行', 1],
+            ['诗意生活', 1],
+            ['美好时光', 1]
+        ];
+
+        // 获取对应的词云文本
+        const blessingText = words[index][0];
+
+        // 随机颜色数组
+        const colors = [
+            '#FF1493', // 深粉色
+            '#FF4500', // 橙红色
+            '#FFD700', // 金色
+            '#FF69B4', // 粉红色
+            '#00FF00', // 亮绿色
+            '#1E90FF', // 道奇蓝
+            '#FF00FF', // 洋红色
+            '#00FFFF', // 青色
+            '#FFA500', // 橙色
+            '#9400D3', // 深紫色
+            '#32CD32', // 酸橙绿
+            '#FF6347'  // 番茄色
+        ];
+
+        // 随机选择一个颜色
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+        // 显示对话框并设置内容
+        document.getElementById('blessing-text').textContent = blessingText;
+        document.getElementById('blessing-text').style.color = randomColor;
+        document.getElementById('blessing-dialog').style.display = 'flex';
+    });
+});
+
+// 点击任意处关闭对话框
+document.addEventListener('click', function(event) {
+    const dialog = document.getElementById('blessing-dialog');
+    if (dialog.style.display === 'flex' && !event.target.closest('.dialog-content')) {
+        dialog.style.display = 'none';
+    }
+});
+
+// 为每个音频元素添加播放状态监听
+document.querySelectorAll('audio').forEach((audio, index) => {
+    const musicPlayer = audio.closest('.music-player');
+    
+    // 播放状态改变时
+    audio.addEventListener('play', () => {
+        musicPlayer.classList.add('playing');
+    });
+    
+    audio.addEventListener('pause', () => {
+        musicPlayer.classList.remove('playing');
+    });
+    
+    audio.addEventListener('ended', () => {
+        musicPlayer.classList.remove('playing');
+    });
+});
+
+// 创建一个函数来停止所有媒体播放
+function stopAllMedia(exceptElement = null) {
+    // 停止所有音频（除了当前播放的）
+    document.querySelectorAll('audio').forEach(audio => {
+        if (audio !== exceptElement) {
+            audio.pause();
+            audio.currentTime = 0; // 重置进度
+        }
+    });
+
+    // 停止所有视频（除了当前播放的）
+    document.querySelectorAll('video').forEach(video => {
+        if (video !== exceptElement) {
+            video.pause();
+            video.currentTime = 0; // 重置进度
+        }
+    });
+}
+
+// 为所有音频添加播放事件监听
+document.querySelectorAll('audio').forEach(audio => {
+    audio.addEventListener('play', () => {
+        stopAllMedia(audio); // 停止其他媒体播放
+    });
+});
+
+// 为所有视频添加播放事件监听
+document.querySelectorAll('video').forEach(video => {
+    video.addEventListener('play', () => {
+        stopAllMedia(video); // 停止其他媒体播放
+    });
 });
   

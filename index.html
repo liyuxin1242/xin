@@ -14,9 +14,21 @@
         <div>加载中...</div>
     </div>
     <header>
-        <div class="artistic-text">welcome to ！</div>
+        <div class="artistic-text">Welcome to the Sanctuary of Online Enlightenment！</div>
         <img src="images/avatar.jpg" alt="个人头像" class="avatar">
         <h1 class="title">欢迎来到礼予昕的主页！</h1>
+        <div class="stats-container">
+            <!-- 删除访问次数和点赞次数的显示 -->
+            <!-- <div class="visit-count">
+                <span id="visit-number">0</span>
+                <span>访问</span>
+            </div>
+            <div class="like-count">
+                <button id="like-button" class="like-button">👍</button>
+                <span id="like-number">0</span>
+                <span>点赞</span>
+            </div> -->
+        </div>
     </header>
     <main>
         <section class="basic-info">
@@ -30,7 +42,7 @@
                 <div>居住｜甘肃省兰州市</div>
                 <div>学校｜兰州大学</div>
                 <div>学历｜本科</div>
-                <div>专业｜计算机应用</div>
+                <div>专业｜计算机</div>
             </div>
         </section>
         <section class="music-players">
@@ -118,7 +130,7 @@
             <div class="chat-box" id="chat-box">
                 <!-- 天记录将显示在这里 -->
             </div>
-            <input type="text" id="user-input" placeholder="输入消息..." />
+            <input type="text" id="user-input" placeholder="锦书欲寄评书语" />
             <button onclick="sendMessage()">发送</button>
         </section>
         <section class="carousel">
@@ -133,7 +145,7 @@
                     <img src="images/1 (3).jpg" alt="照片3">
                 </div>
                 <div>
-                    <img src="images/1 (4).jpg" alt="��片4">
+                    <img src="images/1 (4).jpg" alt="片4">
                 </div>
                 <div>
                     <img src="images/1 (5).jpg" alt="照片5">
@@ -157,7 +169,7 @@
                     <img src="images/1 (11).jpg" alt="照片11">
                 </div>
                 <div>
-                    <img src="images/1 (12).jpg" alt="照片12">
+                    <img src="images/1 (12).jpg" alt="12">
                 </div>
             </div>
         </section>
@@ -204,8 +216,7 @@
             </div>
         </section>
         <section class="content">
-            <h2>详细信息</h2>
-            <a href="#" class="cta-button" id="view-more">查看更多作品</a>
+            <a href="#" class="cta-button" id="view-more">查看<span class="separator">|</span><span class="card-text">名片</span></a>
         </section>
         <section class="farewell-message">
             <h2>结束寄语</h2>
@@ -215,24 +226,51 @@
             <p>幸得君来，或为灵犀之引，或为偶然之缘，皆成佳话。然行舟未止，此别非终。吾将携志远航，于尘世浩渺，深研学识，砥砺心性，逐梦不辍。恰似鹏鸟振翅，欲上九霄揽月。</p>
             <p>待来日，当以更丰硕之果、更深刻之悟，重塑此站新颜。期与君重逢于时光新岸，共话桑麻，再叙幽情。愿君于人生逆旅，能守心如磐，踏破荆棘，撷取繁花盛景。山高水远，就此别过，然情谊长在，后会可期。</p>
         </section>
+        <section class="stats-container">
+            <div class="visit-count">
+                <span id="visit-number">20</span>
+                <span>在线访问</span>
+            </div>
+            <div class="like-count">
+                <button id="like-button" class="like-button">♥</button>
+                <span id="like-number">10</span>
+                <span>点赞</span>
+            </div>
+        </section>
     </main>
     <footer>
         <div class="footer-content">
-            <div class="footer-icons">
-                <a href="https://www.bilibili.com" class="social-icon">Bilibili</a>
-                <a href="#" class="social-icon">微信</a>
-                <a href="#" class="social-icon">QQ</a>
+            <div class="footer-links">
+                <p>
+                    <a href="https://www.alibaba.com" target="_blank">阿里巴巴集团</a> |
+                    <a href="https://www.taobao.com" target="_blank">淘宝网</a> |
+                    <a href="https://www.tmall.com" target="_blank">天猫</a> |
+                    <a href="https://ju.taobao.com" target="_blank">聚划算</a> |
+                    <a href="https://www.aliexpress.com" target="_blank">全球速卖通</a>
+                </p>
+                <p>
+                    <a href="https://www.alibaba.com/trade/marketplace" target="_blank">阿里巴巴国际交易市场</a> |
+                    <a href="https://www.1688.com" target="_blank">1688</a> |
+                    <a href="https://www.aliyun.com" target="_blank">阿里云计算</a> |
+                    <a href="https://www.aliyun.com/product/ios" target="_blank">AliOS</a> |
+                    <a href="https://www.alipay.com" target="_blank">支付宝</a> |
+                    <a href="https://b.alipay.com" target="_blank">支付宝商家平台</a> |
+                    <a href="https://www.baidu.com" target="_blank">百度一下</a> |
+                    <a href="https://www.aliyundrive.com" target="_blank">阿里云盘</a>
+                </p>
             </div>
             <div class="footer-info">
-                <p>个人名言：追求卓越，成功自来。</p>
-                <p>姓名：礼予昕</p>
-                <p>职称：软件工程师</p>
-                <p>邮箱：977223039@qq.com</p>
-                <p>手机号：17704467001</p>
-                <p>工作地址：甘肃省兰州市</p>
+                <p>联系方式: <a href="mailto:977223039@qq.com">977223039@qq.com</a> | LIYUXIN 公告 © 2024/1130 SANHUALIMI | Company Limited 版权所有</p>
             </div>
         </div>
     </footer>
     <script src="script.js"></script>
+    <!-- 在body中添加对话框 -->
+    <div id="blessing-dialog" class="dialog" style="display: none;">
+        <div class="dialog-content">
+            <h2 id="blessing-title">来自昕的祝福！</h2>
+            <p id="blessing-text"></p>
+        </div>
+    </div>
 </body>
 </html>
