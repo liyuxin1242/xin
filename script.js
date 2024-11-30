@@ -447,22 +447,59 @@ class StatisticsSystem {
         this.user = new UserSystem();
         this.antiCheat = new AntiCheatSystem();
         this.initializeCounters();
+        this.setupRealtimeUpdate();
     }
 
     // 初始化计数器
     initializeCounters() {
+        // 获取全局统计数据
         this.totalViews = parseInt(localStorage.getItem('totalViews')) || 20;
         this.totalLikes = parseInt(localStorage.getItem('totalLikes')) || 10;
         
         const userIdentifier = this.user.getUserIdentifier();
-        const today = new Date().toISOString().split('T')[0];
         
+        // 获取用户个人统计数据
+        this.userViews = parseInt(localStorage.getItem(`userViews_${userIdentifier.userId}`)) || 0;
+        this.userLikes = parseInt(localStorage.getItem(`userLikes_${userIdentifier.userId}`)) || 0;
+        
+        // 获取访问和点赞日期
         this.lastVisitDate = localStorage.getItem(`lastVisit_${userIdentifier.userId}`);
         this.lastLikeDate = localStorage.getItem(`lastLike_${userIdentifier.userId}`);
         
-        // 记录访问历史
+        // 记录历史数据
         this.visitHistory = JSON.parse(localStorage.getItem('visitHistory')) || [];
         this.likeHistory = JSON.parse(localStorage.getItem('likeHistory')) || [];
+    }
+
+    // 设置实时更新
+    setupRealtimeUpdate() {
+        // 监听存储变化
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'totalViews' || e.key === 'totalLikes') {
+                this.updateCounters();
+            }
+        });
+
+        // 定期检查更新（每5秒）
+        setInterval(() => {
+            this.updateCounters();
+        }, 5000);
+    }
+
+    // 更新计数器
+    async updateCounters() {
+        const storedTotalViews = parseInt(localStorage.getItem('totalViews')) || 20;
+        const storedTotalLikes = parseInt(localStorage.getItem('totalLikes')) || 10;
+
+        if (storedTotalViews !== this.totalViews) {
+            this.totalViews = storedTotalViews;
+            document.getElementById('visit-number').textContent = this.totalViews;
+        }
+
+        if (storedTotalLikes !== this.totalLikes) {
+            this.totalLikes = storedTotalLikes;
+            document.getElementById('like-number').textContent = this.totalLikes;
+        }
     }
 
     // 记录访问
@@ -474,19 +511,33 @@ class StatisticsSystem {
         if (this.lastVisitDate !== today) {
             // 检查防作弊系统
             if (this.antiCheat.checkRequestRate(userIdentifier.userId, 'visit')) {
+                // 更新全局访问次数
                 this.totalViews++;
                 localStorage.setItem('totalViews', this.totalViews.toString());
+                
+                // 更新用户个人访问次数
+                this.userViews++;
+                localStorage.setItem(`userViews_${userIdentifier.userId}`, this.userViews.toString());
+                
+                // 更新最后访问日期
                 localStorage.setItem(`lastVisit_${userIdentifier.userId}`, today);
                 this.lastVisitDate = today;
                 
                 // 记录访问历史
-                this.visitHistory.push({
+                const visitRecord = {
                     userId: userIdentifier.userId,
                     deviceFingerprint: userIdentifier.deviceFingerprint,
                     ipAddress: userIdentifier.ipAddress,
-                    timestamp: new Date().toISOString()
-                });
+                    timestamp: new Date().toISOString(),
+                    totalViews: this.totalViews,
+                    userViews: this.userViews
+                };
+                
+                this.visitHistory.push(visitRecord);
                 localStorage.setItem('visitHistory', JSON.stringify(this.visitHistory));
+                
+                // 触发实时更新
+                this.updateCounters();
             }
         }
         
@@ -502,19 +553,33 @@ class StatisticsSystem {
         if (this.lastLikeDate !== today) {
             // 检查防作弊系统
             if (this.antiCheat.checkRequestRate(userIdentifier.userId, 'like')) {
+                // 更新全局点赞次数
                 this.totalLikes++;
                 localStorage.setItem('totalLikes', this.totalLikes.toString());
+                
+                // 更新用户个人点赞次数
+                this.userLikes++;
+                localStorage.setItem(`userLikes_${userIdentifier.userId}`, this.userLikes.toString());
+                
+                // 更新最后点赞日期
                 localStorage.setItem(`lastLike_${userIdentifier.userId}`, today);
                 this.lastLikeDate = today;
                 
                 // 记录点赞历史
-                this.likeHistory.push({
+                const likeRecord = {
                     userId: userIdentifier.userId,
                     deviceFingerprint: userIdentifier.deviceFingerprint,
                     ipAddress: userIdentifier.ipAddress,
-                    timestamp: new Date().toISOString()
-                });
+                    timestamp: new Date().toISOString(),
+                    totalLikes: this.totalLikes,
+                    userLikes: this.userLikes
+                };
+                
+                this.likeHistory.push(likeRecord);
                 localStorage.setItem('likeHistory', JSON.stringify(this.likeHistory));
+                
+                // 触发实时更新
+                this.updateCounters();
                 
                 return true;
             }
@@ -525,11 +590,26 @@ class StatisticsSystem {
     // 获取当前统计数据
     getStatistics() {
         const today = new Date().toISOString().split('T')[0];
+        const userIdentifier = this.user.getUserIdentifier();
+        
         return {
-            views: this.totalViews,
-            likes: this.totalLikes,
+            totalViews: this.totalViews,
+            totalLikes: this.totalLikes,
+            userViews: this.userViews,
+            userLikes: this.userLikes,
             canLikeToday: this.lastLikeDate !== today,
-            todayVisited: this.lastVisitDate === today
+            todayVisited: this.lastVisitDate === today,
+            userId: userIdentifier.userId
+        };
+    }
+
+    // 获取用户统计历史
+    getUserHistory() {
+        const userIdentifier = this.user.getUserIdentifier();
+        
+        return {
+            visitHistory: this.visitHistory.filter(record => record.userId === userIdentifier.userId),
+            likeHistory: this.likeHistory.filter(record => record.userId === userIdentifier.userId)
         };
     }
 }
