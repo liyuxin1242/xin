@@ -4,169 +4,43 @@ document.getElementById('user-input').addEventListener('keypress', function(even
     }
 });
 
-function sendMessage() {
+async function sendMessage() {
     const userInput = document.getElementById('user-input');
-    const message = userInput.value.trim();
+    const chatBox = document.getElementById('chat-box');
     
-    if (message) {
-        const chatBox = document.getElementById('chat-box');
-        
-        // 创建用户消息元素
+    if (userInput.value.trim() !== '') {
         const userMessage = document.createElement('div');
         userMessage.className = 'user-message';
-        userMessage.textContent = message;
-        
-        // 将用户消息添加到聊天框
+        userMessage.textContent = `我: ${userInput.value}`;
         chatBox.appendChild(userMessage);
+
+        const response = await callAIAPI(userInput.value);
         
-        // 清空输入框
+        const aiMessage = document.createElement('div');
+        aiMessage.className = 'ai-message';
+        aiMessage.textContent = `小昕: ${response}`;
+        chatBox.appendChild(aiMessage);
+
         userInput.value = '';
-        
-        // 滚动到最新消息
         chatBox.scrollTop = chatBox.scrollHeight;
-        
-        // 调用AI接口获取响应
-        callAIAPIWithJWT(message).then(aiResponse => {
-            const aiMessage = document.createElement('div');
-            aiMessage.className = 'ai-message';
-            aiMessage.textContent = aiResponse;
-            chatBox.appendChild(aiMessage);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }).catch(error => {
-            console.error('Error calling AI API:', error);
-        });
     }
 }
 
-window.onload = function() {
-    const wordCloudOptions = {
-        gridSize: 8,
-        weightFactor: 15,
-        fontFamily: 'Comic Sans MS, cursive, sans-serif',
-        color: function(word, weight) {
-            const colors = [
-                '#FF1493', // 深粉色
-                '#FF4500', // 橙红色
-                '#FFD700', // 金色
-                '#FF69B4', // 粉红色
-                '#00FF00', // 亮绿色
-                '#1E90FF', // 道奇蓝
-                '#FF00FF', // 洋红色
-                '#00FFFF', // 青色
-                '#FFA500', // 橙色
-                '#9400D3', // 深紫色
-                '#32CD32', // 酸橙绿
-                '#FF6347', // 番茄色
-                '#4169E1', // 皇家蓝
-                '#8A2BE2', // 紫罗兰色
-                '#FF8C00'  // 深橙色
-            ];
-            return colors[Math.floor(Math.random() * colors.length)];
-        },
-        backgroundColor: 'rgba(255, 255, 255, 0)',
-        rotateRatio: 0.5,
-        rotationSteps: 2,
-        shape: 'circle',
-        drawOutOfBound: false,
-        click: function(item) {
-            // 显示对话框并设置内容
-            const dialog = document.getElementById('blessing-dialog');
-            const blessingText = document.getElementById('blessing-text');
-            blessingText.textContent = item[0];
-            blessingText.style.color = this.color(item[0], item[1]);
-            dialog.style.display = 'flex';
-
-            // 阻止事件冒泡
-            event.stopPropagation();
-        }
-    };
-
-    const words1 = [
-        ['我亦神明', 12],
-        ['来人间一次', 10],
-        ['美丽大方', 8],
-        ['快乐无忧', 6],
-        ['梦想起航', 5],
-        ['青春飞扬', 4],
-        ['心怀暖阳', 3],
-        ['笑容灿烂', 2],
-        ['活力无限', 1],
-        ['乐观前行', 1],
-        ['诗意生活', 1],
-        ['美好时光', 1]
-    ];
-
-    const words2 = [
-        ['来人间一次', 12],
-        ['吃遍大江南北', 10],
-        ['标志美丽大方', 8],
-        ['追逐梦想', 6],
-        ['畅享阳光', 5],
-        ['拥抱自由', 4],
-        ['心灵欢歌', 3],
-        ['笑对风雨', 2],
-        ['青春飞扬', 1],
-        ['快乐领航', 1],
-        ['星辰作伴', 1],
-        ['花海漫步', 1]
-    ];
-
-    const words3 = [
-        ['诗意栖居', 12],
-        ['勇气满仓', 10],
-        ['友谊之舟', 8],
-        ['希望灯塔', 6],
-        ['清风拂心', 5],
-        ['岁月甜糖', 4],
-        ['心怀暖阳', 3],
-        ['笑容灿烂', 2],
-        ['活力无限', 1],
-        ['乐观前行', 1],
-        ['诗意生活', 1],
-        ['美好时光', 1]
-    ];
-
-    WordCloud(document.getElementById('wordcloud-canvas-1'), {
-        ...wordCloudOptions,
-        list: words1
-    });
-
-    WordCloud(document.getElementById('wordcloud-canvas-2'), {
-        ...wordCloudOptions,
-        list: words2
-    });
-
-    WordCloud(document.getElementById('wordcloud-canvas-3'), {
-        ...wordCloudOptions,
-        list: words3
-    });
-};
-
-const apiKey = 'a4d395de9928afe4b28a4ed829189ca0.rH8aA2EDvAzeFHYo'; // 更新为新的API Key
-
-function generateJWT(apikey, expSeconds) {
-    const [id, secret] = apikey.split('.');
-    const header = {
-        "alg": "HS256",
-        "sign_type": "SIGN"
-    };
-    const payload = {
-        "api_key": id,
-        "exp": Math.floor(Date.now() / 1000) + expSeconds,
-        "timestamp": Math.floor(Date.now() / 1000)
-    };
-
-    return KJUR.jws.JWS.sign("HS256", JSON.stringify(header), JSON.stringify(payload), secret);
-}
-
-async function callAIAPIWithJWT(userMessage) {
-    const token = generateJWT(apiKey, 3600); // 生成JWT Token，过期时间为3600秒
+async function callAIAPI(userMessage) {
+    const apiKey = '837bab95a78ef547954fc78bdefb4cac.YnCclkZBZdiKJxlI';
+    const useJWT = false;
     const url = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
     
-    const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+    let headers = {
+        'Content-Type': 'application/json'
     };
+
+    if (useJWT) {
+        const token = generateJWT(apiKey, 3600);
+        headers['Authorization'] = `Bearer ${token}`;
+    } else {
+        headers['Authorization'] = `Bearer ${apiKey}`;
+    }
 
     const body = JSON.stringify({
         "model": "glm-4",
@@ -193,506 +67,60 @@ async function callAIAPIWithJWT(userMessage) {
     }
 }
 
-document.querySelectorAll('audio').forEach((audio, index) => {
-    const progress = document.getElementById(`progress${index + 1}`);
-    const currentTime = document.getElementById(`current-time${index + 1}`);
-    const totalTime = document.getElementById(`total-time${index + 1}`);
-    const progressBar = document.getElementById(`progress-bar${index + 1}`);
+function generateJWT(apikey, expSeconds) {
+    const [id, secret] = apikey.split('.');
+    const header = {
+        "alg": "HS256",
+        "sign_type": "SIGN"
+    };
+    const payload = {
+        "api_key": id,
+        "exp": Math.floor(Date.now() / 1000) + expSeconds,
+        "timestamp": Math.floor(Date.now() / 1000)
+    };
 
-    audio.addEventListener('timeupdate', () => {
-        const progressPercent = (audio.currentTime / audio.duration) * 100;
-        progress.style.width = `${progressPercent}%`;
+    return KJUR.jws.JWS.sign("HS256", JSON.stringify(header), JSON.stringify(payload), secret);
+}
 
+window.onload = function() {
+    const words = [
+        ['全塞嘴里了', 12],
+        ['七分烟火三分诗意', 10],
+        ['神明亦是我', 8],
+        ['来人间一趟', 6],
+        ['朴实清淡', 5],
+        ['吃遍山珍海味', 4]
+    ];
 
-        const currentMinutes = Math.floor(audio.currentTime / 60);
-        const currentSeconds = Math.floor(audio.currentTime % 60);
-        currentTime.textContent = `${currentMinutes}:${currentSeconds < 10 ? '0' : ''}${currentSeconds}`;
-
-
-        const totalMinutes = Math.floor(audio.duration / 60);
-        const totalSeconds = Math.floor(audio.duration % 60);
-        totalTime.textContent = `${totalMinutes}:${totalSeconds < 10 ? '0' : ''}${totalSeconds}`;
+    WordCloud(document.getElementById('wordcloud-canvas'), {
+        list: words,
+        gridSize: 8,
+        weightFactor: 15,
+        fontFamily: 'Times, serif',
+        color: function() {
+            const colors = ['#ff0000', '#ff69b4', '#ff4500', '#ff6347', '#ff7f50'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        },
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        rotateRatio: 0.5,
+        rotationSteps: 2,
+        shape: 'circle'
     });
 
+    const chatBox = document.getElementById('chat-box');
+    const fullscreenButton = document.getElementById('toggle-fullscreen');
 
-    audio.addEventListener('play', () => {
-        document.querySelectorAll('audio').forEach((otherAudio) => {
-            if (otherAudio !== audio) {
-                otherAudio.pause();
-            }
-        });
-    });
-
-
-    progressBar.addEventListener('click', (e) => {
-        const rect = progressBar.getBoundingClientRect();
-        const offsetX = e.clientX - rect.left;
-        const newTime = (offsetX / progressBar.offsetWidth) * audio.duration;
-        audio.currentTime = newTime;
-    });
-
-
-    audio.addEventListener('loadedmetadata', () => {
-        const totalMinutes = Math.floor(audio.duration / 60);
-        const totalSeconds = Math.floor(audio.duration % 60);
-        totalTime.textContent = `${totalMinutes}:${totalSeconds < 10 ? '0' : ''}${totalSeconds}`;
-    });
-
-    audio.loop = true;
-});
-
-document.getElementById('view-more').addEventListener('click', function(event) {
-    event.preventDefault();
-
-    const qqLink = 'mqqapi://card/show_pslcard?src_type=internal&version=1&uin=977223039';
-    const qqInstallLink = 'https://im.qq.com/index/';
-
-    // 更新确认对话框的文本
-    const userConfirmed = confirm("是否打开QQ添加其好友？");
-
-    if (userConfirmed) {
-        // 检测是否为移动设备
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-        if (isMobile) {
-            window.location.href = qqLink;
+    fullscreenButton.addEventListener('click', function() {
+        if (chatBox.style.height === '150px') {
+            chatBox.style.height = '300px';
         } else {
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = qqLink;
-            document.body.appendChild(iframe);
-
-            setTimeout(() => {
-                document.body.removeChild(iframe);
-                window.location.href = qqInstallLink;
-            }, 2000);
-        }
-    }
-});
-
-document.querySelectorAll('.video-layer').forEach(video => {
-    // 确保循环播放
-    video.loop = true;
-    
-    video.addEventListener('click', () => {
-        if (video.requestFullscreen) {
-            video.requestFullscreen();
-        } else if (video.mozRequestFullScreen) {
-            video.mozRequestFullScreen();
-        } else if (video.webkitRequestFullscreen) {
-            video.webkitRequestFullscreen();
-        } else if (video.msRequestFullscreen) {
-            video.msRequestFullscreen();
+            chatBox.style.height = '150px';
         }
     });
+};
+
+// 初始化时显示第一个对话框
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('chat-box').style.display = 'flex';
+    document.getElementById('doubao-chat-box').style.display = 'none';
 });
-
-// 全屏按钮点击事件
-document.querySelectorAll('.fullscreen-button').forEach((button, index) => {
-    const video = document.querySelectorAll('.video-layer')[index];
-    button.addEventListener('click', async () => {
-        try {
-            // 确保循环播放
-            video.loop = true;
-            
-            // 请求全屏
-            if (video.requestFullscreen) {
-                await video.requestFullscreen();
-            } else if (video.mozRequestFullScreen) {
-                await video.mozRequestFullScreen();
-            } else if (video.webkitRequestFullscreen) {
-                await video.webkitRequestFullscreen();
-            } else if (video.msRequestFullscreen) {
-                await video.msRequestFullscreen();
-            }
-
-            // 开始播放
-            try {
-                await video.play();
-            } catch (playError) {
-                console.debug('Autoplay prevented');
-            }
-        } catch (error) {
-            console.debug('Fullscreen or orientation lock not supported');
-        }
-    });
-
-    // 监听退出全屏事件
-    document.addEventListener('fullscreenchange', () => {
-        if (!document.fullscreenElement) {
-            video.loop = true; // 保持循环状态
-        }
-    });
-});
-
-// 使用 Intersection Observer 延迟加载资源
-document.addEventListener('DOMContentLoaded', function() {
-    // 延迟加载图片
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                observer.unobserve(img);
-            }
-        });
-    });
-
-    // 延迟加载视频
-    const videoObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const video = entry.target;
-                video.src = video.dataset.src;
-                observer.unobserve(video);
-            }
-        });
-    });
-
-    // 优化词云加载
-    setTimeout(() => {
-        // 词云初始化代码
-    }, 1000);
-});
-
-// 优化媒体播放
-document.querySelectorAll('audio, video').forEach(media => {
-    media.preload = 'none';
-    media.addEventListener('loadstart', () => {
-        media.volume = 1.0;
-    });
-});
-
-// 使用 requestAnimationFrame 优化动画性能
-function optimizeAnimation() {
-    requestAnimationFrame(() => {
-        // 处理动画相关的代码
-        optimizeAnimation();
-    });
-}
-optimizeAnimation();
-
-// 模拟用户系统
-class UserSystem {
-    constructor() {
-        // 生成或获取用户ID
-        this.userId = this.getUserId();
-    }
-
-    getUserId() {
-        let userId = localStorage.getItem('userId');
-        if (!userId) {
-            userId = 'user_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('userId', userId);
-        }
-        return userId;
-    }
-}
-
-// 模拟数据库系统
-class DatabaseSimulator {
-    constructor() {
-        this.viewRecords = JSON.parse(localStorage.getItem('viewRecords')) || {};
-        this.likeRecords = JSON.parse(localStorage.getItem('likeRecords')) || {};
-        this.totalViews = parseInt(localStorage.getItem('totalViews')) || 20;
-        this.totalLikes = parseInt(localStorage.getItem('totalLikes')) || 10;
-    }
-
-    // 保存数据
-    saveData() {
-        localStorage.setItem('viewRecords', JSON.stringify(this.viewRecords));
-        localStorage.setItem('likeRecords', JSON.stringify(this.likeRecords));
-        localStorage.setItem('totalViews', this.totalViews.toString());
-        localStorage.setItem('totalLikes', this.totalLikes.toString());
-    }
-
-    // 检查并清理过期记录
-    cleanOldRecords() {
-        const today = new Date().toISOString().split('T')[0];
-        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-        
-        // 清理昨天的记录
-        Object.keys(this.viewRecords).forEach(key => {
-            if (this.viewRecords[key] < today) {
-                delete this.viewRecords[key];
-            }
-        });
-        
-        Object.keys(this.likeRecords).forEach(key => {
-            if (this.likeRecords[key] < today) {
-                delete this.likeRecords[key];
-            }
-        });
-        
-        this.saveData();
-    }
-}
-
-// 统计系统
-class StatsSystem {
-    constructor() {
-        this.user = new UserSystem();
-        this.db = new DatabaseSimulator();
-        this.today = new Date().toISOString().split('T')[0];
-        
-        // 初始化时清理旧记录
-        this.db.cleanOldRecords();
-    }
-
-    // 记录访问
-    recordView() {
-        const viewKey = `${this.user.userId}_${this.today}`;
-        if (!this.db.viewRecords[viewKey]) {
-            this.db.viewRecords[viewKey] = this.today;
-            this.db.totalViews++;
-            this.db.saveData();
-        }
-        return this.db.totalViews;
-    }
-
-    // 处理点赞
-    handleLike() {
-        const likeKey = `${this.user.userId}_${this.today}`;
-        if (!this.db.likeRecords[likeKey]) {
-            this.db.likeRecords[likeKey] = this.today;
-            this.db.totalLikes++;
-            this.db.saveData();
-            return true;
-        }
-        return false;
-    }
-
-    // 获取统计数据
-    getStats() {
-        return {
-            views: this.db.totalViews,
-            likes: this.db.totalLikes,
-            hasLikedToday: this.hasUserLikedToday()
-        };
-    }
-
-    // 检查用户今天是否已点赞
-    hasUserLikedToday() {
-        const likeKey = `${this.user.userId}_${this.today}`;
-        return !!this.db.likeRecords[likeKey];
-    }
-}
-
-// 初始化统计功能
-function initializeStats() {
-    const stats = new StatsSystem();
-    
-    // 记录访问并更新显示
-    const viewCount = stats.recordView();
-    document.getElementById('visit-number').textContent = viewCount;
-    
-    // 获取当前统计数据
-    const currentStats = stats.getStats();
-    document.getElementById('like-number').textContent = currentStats.likes;
-    
-    const likeButton = document.getElementById('like-button');
-    
-    // 如果用户今天已点赞，添加已点赞样式
-    if (currentStats.hasLikedToday) {
-        likeButton.classList.add('liked');
-    }
-    
-    // 点赞按钮事件
-    likeButton.addEventListener('click', function() {
-        if (!currentStats.hasLikedToday) {
-            if (stats.handleLike()) {
-                // 点赞成功
-                this.classList.add('liking');
-                const newStats = stats.getStats();
-                document.getElementById('like-number').textContent = newStats.likes;
-                
-                // 动画效果
-                setTimeout(() => {
-                    this.classList.remove('liking');
-                    this.classList.add('liked');
-                }, 500);
-                
-                // 显示点赞成功动画
-                const heart = document.createElement('div');
-                heart.className = 'heart-animation';
-                heart.innerHTML = '❤️';
-                this.appendChild(heart);
-                
-                setTimeout(() => {
-                    heart.remove();
-                }, 1000);
-                
-                currentStats.hasLikedToday = true;
-            }
-        } else {
-            // 显示已点赞提示
-            const tooltip = document.createElement('div');
-            tooltip.className = 'tooltip';
-            tooltip.textContent = '您今天已经点赞过啦~';
-            this.appendChild(tooltip);
-            
-            setTimeout(() => {
-                tooltip.remove();
-            }, 2000);
-        }
-    });
-}
-
-// 在页面加载完成后初始化统计功能
-window.addEventListener('load', function() {
-    document.getElementById('loading-indicator').style.display = 'none';
-    initializeStats();
-});
-
-// 更新点击任意处关闭对话框的代码
-document.addEventListener('click', function(event) {
-    const dialog = document.getElementById('blessing-dialog');
-    const dialogContent = document.querySelector('.dialog-content');
-    
-    // 如果点击的是对话框背景（不是对话框内容）
-    if (event.target === dialog) {
-        dialog.style.display = 'none';
-    }
-});
-
-// 词云图点击事件
-const wordCloudElements = document.querySelectorAll('.wordcloud canvas');
-
-wordCloudElements.forEach((canvas, index) => {
-    canvas.addEventListener('click', function() {
-        const words = [
-            ['我亦神明', 12],
-            ['来人间一次', 10],
-            ['美丽大方', 8],
-            ['快乐无忧', 6],
-            ['梦想起航', 5],
-            ['青春飞扬', 4],
-            ['心怀暖阳', 3],
-            ['笑容灿烂', 2],
-            ['活力无限', 1],
-            ['乐观前行', 1],
-            ['诗意生活', 1],
-            ['美好时光', 1]
-        ];
-
-        // 获取对应的词云文本
-        const blessingText = words[index][0];
-
-        // 随机颜色数组
-        const colors = [
-            '#FF1493', // 深粉色
-            '#FF4500', // 橙红色
-            '#FFD700', // 金色
-            '#FF69B4', // 粉红色
-            '#00FF00', // 亮绿色
-            '#1E90FF', // 道奇蓝
-            '#FF00FF', // 洋红色
-            '#00FFFF', // 青色
-            '#FFA500', // 橙色
-            '#9400D3', // 深紫色
-            '#32CD32', // 酸橙绿
-            '#FF6347'  // 番茄色
-        ];
-
-        // 随机选择一个颜色
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
-
-        // 显示对话框并设置内容
-        document.getElementById('blessing-text').textContent = blessingText;
-        document.getElementById('blessing-text').style.color = randomColor;
-        document.getElementById('blessing-dialog').style.display = 'flex';
-    });
-});
-
-// 点击任意处关闭对话框
-document.addEventListener('click', function(event) {
-    const dialog = document.getElementById('blessing-dialog');
-    if (dialog.style.display === 'flex' && !event.target.closest('.dialog-content')) {
-        dialog.style.display = 'none';
-    }
-});
-
-// 为每个音频元素添加播放状态监听
-document.querySelectorAll('audio').forEach((audio, index) => {
-    const musicPlayer = audio.closest('.music-player');
-    
-    // 播放状态改变时
-    audio.addEventListener('play', () => {
-        musicPlayer.classList.add('playing');
-    });
-    
-    audio.addEventListener('pause', () => {
-        musicPlayer.classList.remove('playing');
-    });
-    
-    audio.addEventListener('ended', () => {
-        musicPlayer.classList.remove('playing');
-    });
-});
-
-// 创建一个函数来停止所有媒体播放
-function stopAllMedia(exceptElement = null) {
-    // 停止所有音频（除了当前播放的）
-    document.querySelectorAll('audio').forEach(audio => {
-        if (audio !== exceptElement) {
-            audio.pause();
-            audio.currentTime = 0; // 重置进度
-        }
-    });
-
-    // 停止所有视频（除了当前播放的）
-    document.querySelectorAll('video').forEach(video => {
-        if (video !== exceptElement) {
-            video.pause();
-            video.currentTime = 0; // 重置进度
-        }
-    });
-}
-
-// 为所有音频添加播放事件监听
-document.querySelectorAll('audio').forEach(audio => {
-    audio.addEventListener('play', () => {
-        stopAllMedia(audio); // 停止其他媒体播放
-    });
-});
-
-// 为所有视频添加播放事件监听
-document.querySelectorAll('video').forEach(video => {
-    video.addEventListener('play', () => {
-        stopAllMedia(video); // 停止其他媒体播放
-    });
-});
-
-// 禁止右键菜单
-document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-});
-
-// 禁止键盘快捷键
-document.addEventListener('keydown', function(e) {
-    // 禁止 Ctrl + S
-    if (e.ctrlKey && e.key === 's') {
-        e.preventDefault();
-    }
-    // 禁止 Ctrl + U (查看源代码)
-    if (e.ctrlKey && e.key === 'u') {
-        e.preventDefault();
-    }
-    // 禁止 F12
-    if (e.key === 'F12') {
-        e.preventDefault();
-    }
-});
-
-// 禁止拖拽图片
-document.querySelectorAll('img').forEach(img => {
-    img.addEventListener('dragstart', function(e) {
-        e.preventDefault();
-    });
-});
-
-// 禁止选择文本
-document.addEventListener('selectstart', function(e) {
-    e.preventDefault();
-});
-  
