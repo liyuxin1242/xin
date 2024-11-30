@@ -372,81 +372,160 @@ function optimizeAnimation() {
 }
 optimizeAnimation();
 
-// 访问统计和点赞功能
-function initializeStats() {
-    // 获取当前日期
-    const today = new Date().toLocaleDateString();
-    const lastVisitDate = localStorage.getItem('lastVisitDate');
-    
-    // 获取存储的访问次数，初始值设为20
-    let visitCount = parseInt(localStorage.getItem('visitCount')) || 20;
-    
-    // 获取存储的点赞数，初始值设为10
-    let likeCount = parseInt(localStorage.getItem('likeCount')) || 10;
-    
-    // 检查是否是今天第一次访问
-    if (lastVisitDate !== today) {
-        // 增加访问次数
-        visitCount += 1;
-        localStorage.setItem('visitCount', visitCount);
-        
-        // 每天第一次访问时增加点赞次数
-        likeCount += 1;
-        localStorage.setItem('likeCount', likeCount);
-        
-        // 重置点赞状态，允许今天点赞
-        localStorage.removeItem('hasLiked');
-        localStorage.removeItem('lastLikeDate');
-        
-        // 更新最后访问日期
-        localStorage.setItem('lastVisitDate', today);
+// 模拟用户系统
+class UserSystem {
+    constructor() {
+        // 生成或获取用户ID
+        this.userId = this.getUserId();
     }
+
+    getUserId() {
+        let userId = localStorage.getItem('userId');
+        if (!userId) {
+            userId = 'user_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('userId', userId);
+        }
+        return userId;
+    }
+}
+
+// 模拟数据库系统
+class DatabaseSimulator {
+    constructor() {
+        this.viewRecords = JSON.parse(localStorage.getItem('viewRecords')) || {};
+        this.likeRecords = JSON.parse(localStorage.getItem('likeRecords')) || {};
+        this.totalViews = parseInt(localStorage.getItem('totalViews')) || 20;
+        this.totalLikes = parseInt(localStorage.getItem('totalLikes')) || 10;
+    }
+
+    // 保存数据
+    saveData() {
+        localStorage.setItem('viewRecords', JSON.stringify(this.viewRecords));
+        localStorage.setItem('likeRecords', JSON.stringify(this.likeRecords));
+        localStorage.setItem('totalViews', this.totalViews.toString());
+        localStorage.setItem('totalLikes', this.totalLikes.toString());
+    }
+
+    // 检查并清理过期记录
+    cleanOldRecords() {
+        const today = new Date().toISOString().split('T')[0];
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        
+        // 清理昨天的记录
+        Object.keys(this.viewRecords).forEach(key => {
+            if (this.viewRecords[key] < today) {
+                delete this.viewRecords[key];
+            }
+        });
+        
+        Object.keys(this.likeRecords).forEach(key => {
+            if (this.likeRecords[key] < today) {
+                delete this.likeRecords[key];
+            }
+        });
+        
+        this.saveData();
+    }
+}
+
+// 统计系统
+class StatsSystem {
+    constructor() {
+        this.user = new UserSystem();
+        this.db = new DatabaseSimulator();
+        this.today = new Date().toISOString().split('T')[0];
+        
+        // 初始化时清理旧记录
+        this.db.cleanOldRecords();
+    }
+
+    // 记录访问
+    recordView() {
+        const viewKey = `${this.user.userId}_${this.today}`;
+        if (!this.db.viewRecords[viewKey]) {
+            this.db.viewRecords[viewKey] = this.today;
+            this.db.totalViews++;
+            this.db.saveData();
+        }
+        return this.db.totalViews;
+    }
+
+    // 处理点赞
+    handleLike() {
+        const likeKey = `${this.user.userId}_${this.today}`;
+        if (!this.db.likeRecords[likeKey]) {
+            this.db.likeRecords[likeKey] = this.today;
+            this.db.totalLikes++;
+            this.db.saveData();
+            return true;
+        }
+        return false;
+    }
+
+    // 获取统计数据
+    getStats() {
+        return {
+            views: this.db.totalViews,
+            likes: this.db.totalLikes,
+            hasLikedToday: this.hasUserLikedToday()
+        };
+    }
+
+    // 检查用户今天是否已点赞
+    hasUserLikedToday() {
+        const likeKey = `${this.user.userId}_${this.today}`;
+        return !!this.db.likeRecords[likeKey];
+    }
+}
+
+// 初始化统计功能
+function initializeStats() {
+    const stats = new StatsSystem();
     
-    // 更新显示
-    document.getElementById('visit-number').textContent = visitCount;
-    document.getElementById('like-number').textContent = likeCount;
+    // 记录访问并更新显示
+    const viewCount = stats.recordView();
+    document.getElementById('visit-number').textContent = viewCount;
     
-    // 检查是否已经点赞
-    const lastLikeDate = localStorage.getItem('lastLikeDate');
-    const hasLiked = lastLikeDate === today;
+    // 获取当前统计数据
+    const currentStats = stats.getStats();
+    document.getElementById('like-number').textContent = currentStats.likes;
+    
     const likeButton = document.getElementById('like-button');
     
-    if (hasLiked) {
+    // 如果用户今天已点赞，添加已点赞样式
+    if (currentStats.hasLikedToday) {
         likeButton.classList.add('liked');
     }
     
     // 点赞按钮事件
     likeButton.addEventListener('click', function() {
-        const currentDate = new Date().toLocaleDateString();
-        if (!hasLiked && lastLikeDate !== currentDate) {
-            // 点赞动画效果
-            this.classList.add('liking');
-            
-            // 更新点赞数
-            likeCount += 1;
-            localStorage.setItem('likeCount', likeCount);
-            document.getElementById('like-number').textContent = likeCount;
-            
-            // 记录点赞日期
-            localStorage.setItem('lastLikeDate', currentDate);
-            
-            // 添加点赞后的样式
-            setTimeout(() => {
-                this.classList.remove('liking');
-                this.classList.add('liked');
-            }, 500);
-            
-            // 显示点赞成功提示
-            const heart = document.createElement('div');
-            heart.className = 'heart-animation';
-            heart.innerHTML = '❤️';
-            this.appendChild(heart);
-            
-            setTimeout(() => {
-                heart.remove();
-            }, 1000);
+        if (!currentStats.hasLikedToday) {
+            if (stats.handleLike()) {
+                // 点赞成功
+                this.classList.add('liking');
+                const newStats = stats.getStats();
+                document.getElementById('like-number').textContent = newStats.likes;
+                
+                // 动画效果
+                setTimeout(() => {
+                    this.classList.remove('liking');
+                    this.classList.add('liked');
+                }, 500);
+                
+                // 显示点赞成功动画
+                const heart = document.createElement('div');
+                heart.className = 'heart-animation';
+                heart.innerHTML = '❤️';
+                this.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 1000);
+                
+                currentStats.hasLikedToday = true;
+            }
         } else {
-            // 提示已经点赞
+            // 显示已点赞提示
             const tooltip = document.createElement('div');
             tooltip.className = 'tooltip';
             tooltip.textContent = '您今天已经点赞过啦~';
